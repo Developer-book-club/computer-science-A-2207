@@ -34,17 +34,144 @@ console.log(s1 === s2);   // true
 
 ## 팩토리 패턴 (Factory pattern)
 객체 생성 부분을 떼어낸 추상화한 패턴이다. 상속 관계에 있는 두 클래스에서 상위 클래스가 중요한 뼈대를 결정하고, 하위 클래스에서 객체 생성에 관한 구체적인 내용을 결정한다.
+``` typescript
+enum CaffeeType {
+    Espresso,
+    Latte,
+}
 
-상위 클래스와 하위 클래스가 분리되기 때문에 느슨한 결합을 가지게 된다.  
-생성 로직이 분리되어 있기 때문에 유지 보수성이 증가한다.
+// coffee menu
+class Espresso {
+    name: string = 'Espresso';
+}
+class Latte {
+    name: string = 'Latte';
+}
+
+// coffee menu factory
+class EspressoFactory {
+    static createCoffee() {
+        return new Espresso();
+    }
+}
+class LatteFactory {
+    static createCoffee() {
+        return new Latte();
+    }
+}
+
+
+// factory map
+const CaffeeFactoryMap = {
+    [CaffeeType.Espresso]: {
+        factory: EspressoFactory
+    },
+    [CaffeeType.Latte]: {
+        factory: LatteFactory
+    }
+}
+
+class CoffeeFactory {
+    static createCoffee(type: CaffeeType) {
+        const factory =  CaffeeFactoryMap[type].factory;
+        return factory.createCoffee();
+    }
+}
+
+const main = () => {
+    const coffee = CoffeeFactory.createCoffee(CaffeeType.Latte);
+    console.log(`주문하신 ${coffee.name} 나왔습니다.`);
+}
+
+main();
+```
+
+### 장점
+1. 상위 클래스와 하위 클래스가 분리되기 때문에 느슨한 결합을 가지게 된다.
+2. `단일 책임 원칙`과 `개방-폐쇄 원칙`에 부합하며, 유지 보수성이 증가한다.
+
+### 단점
+1. 하위 클래스를 많이 만들어야 하기 때문에 코드가 더 복잡해질 수도 있다.
 
 
 <br>
 
 ## 전략 패턴 (Stractegy pattern)
-객체의 행위를 바꾸고 싶은 경우 **'직접'** 수정하지 않고 전략이라고 부르는 **'캡슐화된 알고리즘'** 을 컨텍스트 안에서 바꿔주면서 상호 교체가 가능하게 만드는 패턴이다.
+객체의 행위를 바꾸고 싶은 경우 **'직접'** 수정하지 않고 전략이라고 부르는 **'캡슐화된 알고리즘'** 을 컨텍스트 안에서 바꿔주면서 상호 교체가 가능하게 만드는 패턴이다.  
+지도 길찾기를 할 때 자전거, 버스, 택시 등 대중교통마다 전부 다 다른 알고리즘과 전략을 사용하는데 전략 패턴과 비슷하다고 할 수 있다.
+``` typescript
+class Context {
+    private strategy: ExamReport;
 
-무언가를 구매할 때 결제 방식의 '전략'만 바꿔서 두 가지 방식으로 결제하는 것과 같은 방식이다.
+    constructor(strategy: ExamReport) {
+        this.strategy = strategy;
+    }
+
+    public setStrategy(strategy: ExamReport) {
+        this.strategy = strategy;
+    }
+
+    public doSomeBusinessLogic(): void {
+        console.log('Sort...');
+        const result = this.strategy.doAlgorithm([
+            {
+                subject: '국어',
+                score: 85
+            },
+            {
+                subject: '수학',
+                score: 96
+            },
+            {
+                subject: '영어',
+                score: 50
+            }
+        ]);
+        console.log(result);
+    }
+}
+
+interface ExamResult {
+    subject: string;
+    score: number;
+}
+
+interface ExamReport {
+    doAlgorithm(data: ExamResult[]): ExamResult[];
+}
+
+class OrderOfGoodGrades implements ExamReport {
+    public doAlgorithm(data: ExamResult[]): ExamResult[] {
+        return data.sort((a, b) => {
+            return b.score - a.score    // 내림차순
+        });
+    }
+}
+
+class OrderOfBadGrades implements ExamReport {
+    public doAlgorithm(data: ExamResult[]): ExamResult[] {
+        return data.sort((a, b) => {
+            return a.score - b.score    // 오름차순
+        });
+    }
+}
+
+const context = new Context(new OrderOfGoodGrades());
+console.log('Order of good grades : ');
+context.doSomeBusinessLogic();
+console.log('--');
+
+console.log('Order of bad grades : ');
+context.setStrategy(new OrderOfBadGrades());
+console.log('--');
+context.doSomeBusinessLogic();
+```
+
+### 장점
+1. 알고리즘을 사용하는 코드에서 알고리즘의 구현 세부 정보를 분리할 수 있다.
+
+### 단점
+1. 패턴과 알고리즘이 별로 없는 경우 오히려 코드가 복잡해질 수 있다.
 
 
 <br>
@@ -173,6 +300,16 @@ MVC의 컨트롤러가 뷰모델(view modal)로 바뀐 패턴이다.
 로직이 수행되어야 할 연속적인 계산 과정으로 이루어진 방식이다.  
 일이 진행되는 방식이 그저 코드를 구현하기만 하면 되기 때문에 코드 가독성이 좋으며 실행 속도가 빠르다. 그렇기 때문에 계산이 많은 작업 등에 쓰인다.  
 단점으로는 모듈화하기가 어렵고 유지 보수성이 떨어진다는 점이다.
+
+
+<br>
+
+# 요약
+
+
+<br>
+
+# 예상 면접 질문
 
 
 <br>
