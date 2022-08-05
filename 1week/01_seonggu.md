@@ -88,8 +88,6 @@ public class HelloWorld{
 이터러블한 객체기만 하면 하나의 인터페이스로 순회가 가능하다.
 
 ## MVC 패턴
-![](./../../../assets/images/2022-07-29-design_pattern_images/1659110650240.png)
-
 모델(Model), 뷰(View), 컨트롤러(Controller)로 이루어진 디자인 패턴이다.
 어플리케이션의 구성 요소들을 이 세 가지로 나눔으로써, 설계 시 개별 요소에 더 집중할 수 있는 장점을 가진다.    
 대표적으로 리엑트 라이브러리가 있다.
@@ -110,14 +108,11 @@ public class HelloWorld{
 
 
 ## MVP 패턴
-![](./../../../assets/images/2022-07-29-design_pattern_images/1659110633600.png)
-
 MVC 패턴에서 C가 presenter로 변경된 패턴이다.    
 이 패턴에서는 Model과 View 분리되어 있고 오직 Presenter를 통해서 상태나 변화를 알려줄 수 있다.     
 MVC와 달리 Presenter와 View는 1:1 관계이다.
 따라서 View와 모델간 의존성은 줄었으나, presenter와 View의 의존성이 높아지는 문제가 있다.
 ## MVVM 패턴
-![](./../../../assets/images/2022-07-29-design_pattern_images/1659111074030.png)
 MVC패턴에서 C가 뷰모델(view model)로 변경된 패턴이다. 뷰모델은 뷰를 더 추상화하여, 커멘드와 데이터 바인딩(화면의 데이터와 웹 브라우저의 메모리 데이터를 일치시키는 기법)을 가지게 된다.
 대표적으로 Vue.js가 있다.
 
